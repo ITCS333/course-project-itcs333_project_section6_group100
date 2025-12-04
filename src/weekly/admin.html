@@ -19,6 +19,9 @@
 
     <!-- TODO: Link to your CSS framework or stylesheet. -->
     <link rel="stylesheet" href="styles.css">
+
+    <!-- Link to the JavaScript file -->
+    <script src="admin.js" defer></script>
 </head>
 <body>
 
@@ -85,33 +88,22 @@
                 </thead>
 
                 <!-- TODO: Create a 'tbody' for the data. -->
-                <tbody>
-                    <!-- TODO: Add 1-2 rows of dummy data to see the structure. -->
-                    <!-- Example Row 1: -->
-                    <!-- TODO: Create a 'tr' for the first week. -->
+                <tbody id="weeks-tbody">
+                    <!-- Dummy data rows (can be removed once JS populates dynamically) -->
                     <tr>
-                        <!-- TODO: Add 'td' cells for a title (e.g., "Week 1: Intro to HTML") and a short description. -->
                         <td>Week 1: Intro to HTML</td>
                         <td>Basic structure of HTML documents</td>
-
-                        <!-- TODO: Add a 'td' containing the action buttons. -->
                         <td>
-                            <!-- TODO: Add an "Edit" button. -->
-                            <button>Edit</button>
-                            <!-- TODO: Add a "Delete" button. -->
-                            <button>Delete</button>
+                            <button class="edit-btn" data-id="week1">Edit</button>
+                            <button class="delete-btn" data-id="week1">Delete</button>
                         </td>
-                        <!-- End of actions 'td'. -->
                     </tr>
-                    <!-- End of the row. -->
-
-                    <!-- Example Row 2 -->
                     <tr>
                         <td>Week 2: CSS Basics</td>
                         <td>Introduction to styling with CSS</td>
                         <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
+                            <button class="edit-btn" data-id="week2">Edit</button>
+                            <button class="delete-btn" data-id="week2">Delete</button>
                         </td>
                     </tr>
                 </tbody>
@@ -125,5 +117,7 @@
     <!-- End of main. -->
 </body>
 </html>
+
+
 
 
