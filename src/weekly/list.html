@@ -17,6 +17,8 @@
 
     <!-- TODO: Link to your CSS framework or stylesheet. -->
     <link rel="stylesheet" href="styles.css">
+
+    <script src="list.js" defer></script>
 </head>
 <body>
 
@@ -28,7 +30,7 @@
     <!-- TODO: Create the 'main' content area. -->
     <main>
         <!-- TODO: Create a 'section' to contain the list of weeks. -->
-        <section>
+        <section id="week-list-section">
             <!-- TODO: Add 2-3 dummy weekly entries using the structure below. -->
 
             <!-- Example Week 1: -->
@@ -41,9 +43,9 @@
                 <!-- TODO: Add a paragraph ('p') for a brief description of the week. -->
                 <p>This week covers the basics of HTML including structure, elements, and semantic tags.</p>
                 <!-- TODO: Add an anchor tag ('a') that links to the detail page. 
-                     - For now, the 'href' can be "week-detail.html".
+                     - For now, the 'href' can be "details.html?id=week1".
                      - The link text should be "View Details & Discussion". -->
-                <a href="week-detail.html">View Details & Discussion</a>
+                <a href="details.html?id=week1">View Details & Discussion</a>
             </article>
             <!-- End of article. -->
 
@@ -54,7 +56,7 @@
                 <h2>Week 2: CSS Basics</h2>
                 <p>Starts on: 2025-01-17</p>
                 <p>This week introduces CSS styling, selectors, and how to design visually appealing web pages.</p>
-                <a href="week-detail.html">View Details & Discussion</a>
+                <a href="details.html?id=week2">View Details & Discussion</a>
             </article>
             <!-- End of article. -->
 
@@ -63,7 +65,7 @@
                 <h2>Week 3: JavaScript Fundamentals</h2>
                 <p>Starts on: 2025-01-24</p>
                 <p>This week covers the basics of JavaScript including variables, functions, and event handling.</p>
-                <a href="week-detail.html">View Details & Discussion</a>
+                <a href="details.html?id=week3">View Details & Discussion</a>
             </article>
             <!-- End of article. -->
 
@@ -74,4 +76,5 @@
 
 </body>
 </html>
+
 
