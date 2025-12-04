@@ -1,4 +1,4 @@
-JavaScript
+
 
 /*
   Requirement: Populate the weekly detail page and discussion forum.
