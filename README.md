@@ -3,7 +3,17 @@
 # ITCS### Course Page
 
 ## The names and student IDs of all team members.
-
+- **Mohammad Mustafa Alajriri** – 20193102  
+- **Shahad Mustafa Ali** – 202201096  
+- **Ali Jaffar Hassan** – 202107339  
+- **Sayed Hussain Ali** – 202306625 
 ## A table indicating which student was responsible for which task.
+| Student Name                | Student ID | Task |
+|-----------------------------|------------|------|
+| Mohammad Mustafa Alajriri   | 20193102   | Task 1 |
+| Shahad Mustafa Ali          | 202201096  | Task 2 |
+| Ali Jaffar Hassan           | 202107339  | Task 3 |
+| Sayed Hussain Ali           | 202306625  | Task 4 |
 
 ## A link to your live, hosted application on Replit.
+https://replit.com/@Shahadmqurban/ITCS333-Course-Project?v=1
