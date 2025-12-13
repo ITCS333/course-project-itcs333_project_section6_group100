@@ -1,0 +1,449 @@
+/* =====================================
+   Base + Design Tokens
+   ===================================== */
+
+:root {
+  --color-bg: #0f172a;
+  --color-bg-soft: #020617;
+  --color-surface: rgba(15, 23, 42, 0.85);
+  --color-surface-strong: rgba(15, 23, 42, 0.95);
+  --color-text-main: #e5e7eb;
+  --color-text-muted: #9ca3af;
+  --color-border: rgba(148, 163, 184, 0.45);
+  --color-border-soft: rgba(51, 65, 85, 0.6);
+  --color-primary: #3b82f6;
+  --color-primary-dark: #2563eb;
+  --color-navbar: #020617;
+  --color-danger: #f97373;
+  --color-danger-soft: rgba(248, 113, 113, 0.16);
+  --color-success: #4ade80;
+  --color-success-soft: rgba(34, 197, 94, 0.16);
+
+  --radius-sm: 8px;
+  --radius-md: 18px;
+  --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.7);
+  --transition-fast: 0.18s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* نخلي البودي دايماً في منتصف جميل + خلفية برو */
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--color-text-main);
+  line-height: 1.6;
+  background:
+    radial-gradient(circle at 0% 0%, #1d4ed8 0, transparent 55%),
+    radial-gradient(circle at 100% 100%, #22c55e 0, transparent 55%),
+    radial-gradient(circle at 0% 100%, #eab308 0, transparent 55%),
+    var(--color-bg-soft);
+  background-attachment: fixed;
+}
+
+/* Typography */
+h1,
+h2,
+h3 {
+  margin-top: 0;
+  color: #f9fafb;
+}
+
+h1 {
+  font-size: 1.9rem;
+  margin-bottom: 0.75rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* =====================================
+   Navbar
+   ===================================== */
+
+.navbar {
+  background: linear-gradient(to right, #020617 0%, #0b1220 40%, #020617 100%);
+  color: #f9fafb;
+  padding: 14px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.9);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.navbar-left {
+  font-size: 1.2rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.navbar-right a {
+  color: #e5e7eb;
+  text-decoration: none;
+  margin-left: 18px;
+  font-size: 0.95rem;
+  position: relative;
+  padding-bottom: 3px;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+}
+
+/* active link (اختياري: ضيف class="nav-active" على اللينك الحالي) */
+.navbar-right a.nav-active {
+  color: #ffffff;
+}
+
+.navbar-right a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #3b82f6, #22c55e);
+  transition: width var(--transition-fast);
+}
+
+.navbar-right a:hover {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.navbar-right a:hover::after {
+  width: 100%;
+}
+
+@media (max-width: 800px) {
+  .navbar {
+    padding: 10px 18px;
+  }
+
+  .navbar-right a {
+    margin-left: 10px;
+  }
+}
+
+/* =====================================
+   Layout
+   ===================================== */
+
+.page-main {
+  flex: 1;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 18px 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* لو الصفحة فيها كارد واحدة (login / change password) حاول وسّطها أكثر */
+.page-main > .small-card:only-child,
+.page-main > .card:only-child {
+  margin-top: 40px;
+}
+
+/* =====================================
+   Cards (Glassmorphism style)
+   ===================================== */
+
+.card {
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius-md);
+  padding: 26px 30px;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 0;
+  border: 1px solid var(--color-border);
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.95);
+  border-color: rgba(59, 130, 246, 0.75);
+  background: var(--color-surface-strong);
+}
+
+.hero-card {
+  margin-top: 8px;
+}
+
+.small-card {
+  max-width: 480px;
+  margin: 40px auto;
+}
+
+/* عنوان داخل الكارد + سطر خفيف تحته */
+.card h2 {
+  margin-bottom: 0.5rem;
+  position: relative;
+}
+
+.card h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(to right, #3b82f6, #22c55e);
+  border-radius: 999px;
+}
+
+/* =====================================
+   Buttons
+   ===================================== */
+
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 999px;
+  padding: 11px 20px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  line-height: 1.2;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast),
+    border-color var(--transition-fast);
+  font-weight: 500;
+}
+
+.btn.primary {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  color: #f9fafb;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.55);
+}
+
+.btn.secondary {
+  background: rgba(15, 23, 42, 0.6);
+  color: #e5e7eb;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.btn.full-width {
+  width: 100%;
+}
+
+.btn.primary:hover {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.75);
+}
+
+.btn.secondary:hover {
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-group .btn {
+  margin-right: 10px;
+}
+
+/* =====================================
+   Forms
+   ===================================== */
+
+.form label {
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.form input {
+  width: 100%;
+  padding: 9px 11px;
+  margin-top: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border-soft);
+  font-size: 0.95rem;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    background var(--transition-fast),
+    transform var(--transition-fast);
+  background: rgba(15, 23, 42, 0.7);
+  color: var(--color-text-main);
+}
+
+.form input::placeholder {
+  color: var(--color-text-muted);
+  font-size: 0.84rem;
+}
+
+.form input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.6);
+  background: rgba(15, 23, 42, 0.95);
+  transform: translateY(-1px);
+}
+
+/* =====================================
+   Alerts
+   ===================================== */
+
+.alert {
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+}
+
+.alert-error {
+  background: var(--color-danger-soft);
+  color: var(--color-danger);
+  border-color: rgba(248, 113, 113, 0.9);
+}
+
+.alert-success {
+  background: var(--color-success-soft);
+  color: var(--color-success);
+  border-color: rgba(74, 222, 128, 0.9);
+}
+
+/* =====================================
+   Tables
+   ===================================== */
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  color: var(--color-text-main);
+}
+
+.data-table th,
+.data-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+  text-align: left;
+}
+
+.data-table th {
+  background: linear-gradient(to right, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.data-table tr:nth-child(even) {
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.data-table tr:nth-child(odd) {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+.data-table tr:hover {
+  background: rgba(37, 99, 235, 0.35);
+}
+
+.data-table .empty {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* =====================================
+   Links
+   ===================================== */
+
+.link {
+  color: #60a5fa;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition:
+    color var(--transition-fast),
+    text-decoration-color var(--transition-fast),
+    transform var(--transition-fast);
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: #bfdbfe;
+  transform: translateY(-1px);
+}
+
+.link.danger {
+  color: #fb7185;
+}
+
+/* =====================================
+   Layout grid
+   ===================================== */
+
+.grid.two-columns {
+  display: grid;
+  grid-template-columns: 1.05fr 1.35fr;
+  gap: 22px;
+  align-items: flex-start;
+}
+
+@media (max-width: 900px) {
+  .grid.two-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =====================================
+   Footer
+   ===================================== */
+
+.footer {
+  margin-top: 24px;
+  padding: 16px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid rgba(30, 41, 59, 0.9);
+  background: rgba(15, 23, 42, 0.96);
+}
+
+/* =====================================
+   Small hint text
+   ===================================== */
+
+.hint {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  margin-top: 8px;
+}
