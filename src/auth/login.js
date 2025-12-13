@@ -1,31 +1,37 @@
 function isValidEmail(email) {
-  if (typeof email !== "string") return false;
-  return email.includes("@") && email.includes(".");
+  return typeof email === "string" && email.includes("@") && email.includes(".");
 }
 
 function isValidPassword(password) {
-  if (typeof password !== "string") return false;
-  return password.length >= 8;
+  return typeof password === "string" && password.length >= 8;
+}
+
+function showMessage(text) {
+  const message = document.getElementById("message");
+  message.textContent = text;
 }
 
 function handleLogin(event) {
   event.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  const message = document.getElementById("message");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+
+  const email = emailInput.value;
+  const password = passwordInput.value;
 
   if (!isValidEmail(email)) {
-    message.textContent = "Invalid email";
-    return;
+    showMessage("Please enter a valid email address.");
+    return false;
   }
 
   if (!isValidPassword(password)) {
-    message.textContent = "Invalid password";
-    return;
+    showMessage("Password must be at least 8 characters long.");
+    return false;
   }
 
-  message.textContent = "Login successful";
+  showMessage("Login successful.");
+  return true;
 }
 
 function setupLoginForm() {
@@ -36,4 +42,3 @@ function setupLoginForm() {
 }
 
 setupLoginForm();
-
