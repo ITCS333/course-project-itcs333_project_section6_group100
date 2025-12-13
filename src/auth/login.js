@@ -1,18 +1,15 @@
-// Validate email
 function isValidEmail(email) {
   if (typeof email !== "string") return false;
   return email.includes("@") && email.includes(".");
 }
 
-// Validate password
 function isValidPassword(password) {
   if (typeof password !== "string") return false;
   return password.length >= 8;
 }
 
-// Handle login submit
 function handleLogin(event) {
-  event.preventDefault(); // required by tests
+  event.preventDefault();
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -24,14 +21,13 @@ function handleLogin(event) {
   }
 
   if (!isValidPassword(password)) {
-    message.textContent = "Password must be at least 8 characters";
+    message.textContent = "Invalid password";
     return;
   }
 
   message.textContent = "Login successful";
 }
 
-// Setup form listener
 function setupLoginForm() {
   const form = document.getElementById("loginForm");
   if (form) {
@@ -39,5 +35,5 @@ function setupLoginForm() {
   }
 }
 
-// Run on load
 setupLoginForm();
+
