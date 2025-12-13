@@ -1,62 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Character encoding -->
   <meta charset="UTF-8">
-
-  <!-- Responsive viewport -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Page title -->
   <title>Login</title>
 
-  <!-- CSS stylesheet for page styling -->
+  <!-- CSS Framework -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
 </head>
 
-<body>
+<body style="min-height: 100vh; display: grid; place-items: center; margin: 0; padding: 16px;">
+  <main style="width: 100%; max-width: 480px;">
+    <section style="padding: 24px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);">
+      <h1>Welcome Back!</h1>
 
-  <!-- Page header -->
-  <header>
-    <h1>Login</h1>
-  </header>
-
-  <!-- Main content area -->
-  <main>
-
-    <!-- Login form section -->
-    <section>
-      <h2>Welcome Back!</h2>
-
-      <!-- Message container for validation feedback -->
       <div id="message"></div>
 
-      <!-- Login form -->
-      <form id="loginForm">
+      <form action="login.html" method="post">
         <fieldset>
           <legend>Secure Login</legend>
 
-          <!-- Email input -->
           <label for="email">Email Address</label>
-          <input type="email" id="email">
+          <input type="email" id="email" name="email" required>
 
-          <!-- Password input -->
           <label for="password">Password</label>
-          <input type="password" id="password">
+          <input type="password" id="password" name="password" required minlength="8">
 
-          <!-- Submit button -->
           <button type="submit" id="login">Log In</button>
         </fieldset>
       </form>
     </section>
-
-    <!-- Extra section required by automated tests -->
-    <section></section>
-
   </main>
-
-  <!-- Login JavaScript file -->
-  <script src="login.js" defer></script>
-
 </body>
 </html>
