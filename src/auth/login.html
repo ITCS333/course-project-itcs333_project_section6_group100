@@ -1,54 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Meta tags -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
 
-  <!-- Page title -->
-  <title>Login</title>
-
-  <!-- CSS Framework -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
-
 <body>
-  <main>
-    <section>
-      <h1>Login</h1>
 
-      <!-- Message container -->
-      <div id="message"></div>
+    <header>
+        <h1>Login</h1>
+    </header>
 
-      <!-- Login form -->
-      <form action="#" method="post">
-        <fieldset>
-          <legend>Login Form</legend>
+    <main>
+        <section>
+            <form id="loginForm" action="api/login.php" method="post">
+                <fieldset>
+                    <legend>User Login</legend>
 
-          <!-- Email field -->
-          <label for="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-          >
+                    <label for="email">Email</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                    >
 
-          <!-- Password field (TASK1107 FIX) -->
-          <label for="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            minlength="8"
-          >
+                    <label for="password">Password</label>
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        required
+                        minlength="6"
+                    >
 
-          <!-- Submit button -->
-          <button type="submit" id="login">Login</button>
-        </fieldset>
-      </form>
-    </section>
-  </main>
+                    <button type="submit">Login</button>
+                </fieldset>
+            </form>
+
+            <p id="message"></p>
+        </section>
+    </main>
+
+    <script src="login.js"></script>
 </body>
 </html>
