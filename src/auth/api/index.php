@@ -1,76 +1,116 @@
 <?php
+// Start PHP session
 session_start();
 
-header("Content-Type: application/json");
+// Set JSON response header
+header('Content-Type: application/json');
 
 try {
-
     // Check request method
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    if (!isset($_SERVER['REQUEST_METHOD']) || $_SERVER['REQUEST_METHOD'] !== 'POST') {
         echo json_encode([
-            "success" => false,
-            "message" => "Invalid request method"
+            'success' => false,
+            'message' => 'Invalid request method'
         ]);
         exit;
     }
 
-    // Read raw POST data
-    $rawInput = file_get_contents("php://input");
+    // Read raw JSON input
+    $rawInput = file_get_contents('php://input');
+
+    // Decode JSON data into associative array
     $data = json_decode($rawInput, true);
 
-    if (!isset($data['email']) || !isset($data['password'])) {
+    // Extract email and password
+    $email = isset($data['email']) ? trim($data['email']) : '';
+    $password = isset($data['password']) ? (string)$data['password'] : '';
+
+    // Validate email format
+    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo json_encode([
-            "success" => false,
-            "message" => "Missing credentials"
+            'success' => false,
+            'message' => 'Invalid email'
         ]);
         exit;
     }
 
-    $email = trim($data['email']);
-    $password = $data['password'];
-
-    // Validate email
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    // Validate password existence
+    if (!$password) {
         echo json_encode([
-            "success" => false,
-            "message" => "Invalid email"
+            'success' => false,
+            'message' => 'Password is required'
         ]);
         exit;
     }
 
-    // DB connection
-    $pdo = new PDO(
-        "mysql:host=localhost;dbname=test",
-        "root",
-        "",
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
+    // Include database connection (PDO)
+    require_once __DIR__ . '/../../Config/database.php';
+
+    // Ensure PDO connection exists
+    if (!isset($pdo)) {
+        throw new PDOException('PDO connection not found');
+    }
+
+    // Prepare SQL query
+    $stmt = $pdo->prepare(
+        "SELECT id, name, email, password, role 
+         FROM users 
+         WHERE email = :email 
+         LIMIT 1"
     );
 
-    // Prepared statement
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
+    // Execute prepared statement
+    $stmt->execute([':email' => $email]);
+
+    // Fetch user data
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Verify password
-    if (!$user || !password_verify($password, $user['password'])) {
+    // Check if user exists
+    if (!$user) {
         echo json_encode([
-            "success" => false,
-            "message" => "Login failed"
+            'success' => false,
+            'message' => 'Invalid credentials'
         ]);
         exit;
     }
 
-    // Store session
-    $_SESSION['user'] = $user['email'];
+    // Verify password
+    if (!password_verify($password, $user['password'])) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Invalid credentials'
+        ]);
+        exit;
+    }
 
+    // Store user data in session
+    $_SESSION['user'] = [
+        'id' => $user['id'],
+        'name' => $user['name'],
+        'email' => $user['email'],
+        'role' => $user['role']
+    ];
+
+    // Successful login response
     echo json_encode([
-        "success" => true,
-        "message" => "Login successful"
+        'success' => true,
+        'message' => 'Login successful'
     ]);
+    exit;
 
 } catch (PDOException $e) {
+    // Handle database errors
     echo json_encode([
-        "success" => false,
-        "message" => "Server error"
+        'success' => false,
+        'message' => 'Database error'
     ]);
+    exit;
+
+} catch (Exception $e) {
+    // Handle general server errors
+    echo json_encode([
+        'success' => false,
+        'message' => 'Server error'
+    ]);
+    exit;
 }
