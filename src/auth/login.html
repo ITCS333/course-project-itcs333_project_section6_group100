@@ -1,59 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Required meta tags for tests -->
   <meta charset="UTF-8" />
-  <!-- Responsive meta tag -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- Page title required -->
   <title>Login</title>
 
-  <!-- Main stylesheet -->
-  <link rel="stylesheet" href="../../assets/style.css" />
+  <!-- At least one stylesheet link (keep your existing path if different) -->
+  <link rel="stylesheet" href="../assets/style.css" />
 </head>
-
 <body>
-  <!-- Page header -->
   <header>
     <h1>Login</h1>
   </header>
 
-  <!-- Main content -->
   <main>
     <section>
-      <!-- Login form -->
       <form id="loginForm" action="api/login.php" method="post">
         <fieldset>
           <legend>User Login</legend>
 
-          <!-- Email field -->
+          <!-- Email label MUST have for="..." and input MUST have id -->
           <label for="email">Email</label>
           <input
-            id="email"
             type="email"
+            id="email"
             name="email"
             required
           />
 
-          <!-- Password field -->
+          <!-- Password label MUST have for="..." and input MUST have id + minlength -->
           <label for="password">Password</label>
           <input
-            id="password"
             type="password"
+            id="password"
             name="password"
             required
+            minlength="8"
           />
 
-          <!-- Submit button -->
-          <button id="loginBtn" type="submit">Login</button>
+          <!-- Button MUST have an id -->
+          <button type="submit" id="loginBtn">Login</button>
         </fieldset>
       </form>
 
-      <!-- Message container for JS feedback -->
+      <!-- Message container MUST be a div with an id -->
       <div id="message"></div>
     </section>
   </main>
 
-  <!-- Login script (defer is required for tests) -->
+  <!-- Script tag MUST have defer -->
   <script src="login.js" defer></script>
 </body>
 </html>
