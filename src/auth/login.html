@@ -1,37 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="../assets/style.css">
+  <meta charset="UTF-8" />
+  <!-- Responsive meta tag -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Login</title>
+
+  <!-- Main stylesheet -->
+  <link rel="stylesheet" href="../../assets/style.css" />
 </head>
+
 <body>
-
-<header>
+  <!-- Page header -->
+  <header>
     <h1>Login</h1>
-</header>
+  </header>
 
-<main>
+  <!-- Main content -->
+  <main>
     <section>
-        <form id="loginForm" action="api/login.php" method="post">
-            <fieldset>
-                <legend>User Login</legend>
+      <!-- Login form -->
+      <form id="loginForm" action="api/login.php" method="post">
+        <fieldset>
+          <legend>User Login</legend>
 
-                <label>Email</label>
-                <input type="email" name="email" required>
+          <!-- Email field -->
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            required
+          />
 
-                <label>Password</label>
-                <input type="password" name="password" required minlength="6">
+          <!-- Password field -->
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            required
+          />
 
-                <button type="submit">Login</button>
-            </fieldset>
-        </form>
+          <!-- Submit button -->
+          <button id="loginBtn" type="submit">Login</button>
+        </fieldset>
+      </form>
 
-        <p id="message"></p>
+      <!-- Message container for JS feedback -->
+      <div id="message"></div>
     </section>
-</main>
+  </main>
 
-<script src="login.js"></script>
+  <!-- Login script (defer is required for tests) -->
+  <script src="login.js" defer></script>
 </body>
 </html>
