@@ -55,6 +55,18 @@
 // Allow cross-origin requests (CORS) if needed
 // Allow specific HTTP methods (GET, POST, PUT, DELETE, OPTIONS)
 // Allow specific headers (Content-Type, Authorization)
+session_start();
+
+$_SESSION['initialized'] = true;
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' || $_SERVER['REQUEST_METHOD'] == 'PUT' || $_SERVER['REQUEST_METHOD'] == 'DELETE') {
+    if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Admin access required']);
+        exit();
+    }
+}
+
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
@@ -128,7 +140,7 @@ function getAllResources($db) {
     // Use OR to search both fields
     $search = $_GET['search'] ?? null;
     if ($search) {
-        $sql .= "WHERE title LIKE :search OR description LIKE :search";
+        $sql .= " WHERE title LIKE :search OR description LIKE :search";
         $params[':search'] = "%" . $search . "%";
     }
     
@@ -262,7 +274,8 @@ function createResource($db, $data) {
     
     // TODO: Prepare INSERT query
     // INSERT INTO resources (title, description, link) VALUES (?, ?, ?)
-    $sql = "INSERT INTO resources (title, description, link) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO resources (title, description, link)
+        VALUES (:title, :description, :link)";
     $stmt = $db->prepare($sql);
     
     // TODO: Bind parameters
@@ -319,7 +332,7 @@ function updateResource($db, $data) {
     $resourceId = $data['id'];
     $checkSql = "SELECT id FROM resources WHERE id = ?";
     $checkStmt = $db->prepare($checkSql);
-    $checkStmt->bindValue(':id', $resourceId);
+    $checkStmt->bindValue(1, $resourceId, PDO::PARAM_INT);
     $checkStmt->execute();
 
     if (!$checkStmt->fetch()) {
@@ -418,7 +431,7 @@ function deleteResource($db, $resourceId) {
     // If not found, return error response with 404 status
     $checkSql = "SELECT id FROM resources WHERE id = ?";
     $checkStmt = $db->prepare($checkSql);
-    $checkStmt->bindValue(':id', $resourceId);
+    $checkStmt->bindValue(1, $resourceId, PDO::PARAM_INT);
     $checkStmt->execute();
 
     if (!$checkStmt->fetch()){
@@ -537,7 +550,7 @@ function createComment($db, $data) {
     // Check if resource_id, author, and text are provided and not empty
     // If any required field is missing, return error response with 400 status
     if (empty($data['resource_id']) || empty($data['author']) || empty($data['text'])) {
-        sendResponse(array('success' => false, ' message'=> 'resource_id, author and text are required'), 400);
+        sendResponse(array('success' => false, 'message'=> 'resource_id, author and text are required'), 400);
         return;
     }
     
@@ -576,7 +589,7 @@ function createComment($db, $data) {
     // Bind resource_id, author, and text
     $stmt->bindValue(':resource_id', $resourceId);
     $stmt->bindValue(':author', $author);
-    $stmt->bindValue(':text', $text)
+    $stmt->bindValue(':text', $text);
     
     // TODO: Execute the query
     $stmt->execute();
@@ -620,9 +633,9 @@ function deleteComment($db, $commentId) {
     // TODO: Check if comment exists
     // Prepare and execute a SELECT query
     // If not found, return error response with 404 status
-    $checkSql = " SELECT id FROM comment WHERE id = :comment_id";
+    $checkSql = "SELECT id FROM comments WHERE id = ?";
     $checkStmt = $db->prepare($checkSql);
-    $checkStmt->bindValue(':comment_id', $commentId);
+    $checkStmt->bindValue(1, $commentId, PDO::PARAM_INT);
     $checkStmt->execute();
 
     if (!$checkStmt->fetch()) {
