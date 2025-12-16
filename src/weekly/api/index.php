@@ -1,5 +1,9 @@
-
 <?php
+session_start();
+$_SESSION['user'] = $_SESSION['user'] ?? 'guest';
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+
 function getAllWeeks($db) {
     // TODO: Initialize variables for search, sort, and order from query parameters
     $search = isset($_GET['search']) ? $_GET['search'] : null;
@@ -56,7 +60,8 @@ function getAllWeeks($db) {
 
     // TODO: Return JSON response with success status and data
     // Use sendResponse() helper function
-    sendResponse(true, $weeks)
+    sendResponse(true, $weeks);
+}
 
 
 function getWeekById($db, $weekId) {
@@ -263,406 +268,30 @@ function updateWeek($db, $data) {
 }
 
 
-
-
-function deleteWeek($db, $weekId) {
-    // TODO: Validate that week_id is provided
-    // If not, return error response with 400 status
-    if (empty($weekId)) {
-        sendResponse(false, null, "week_id is required", 400);
-        return;
-    }
-
-    // TODO: Check if week exists
-    // Prepare and execute a SELECT query
-    // If not found, return error response with 404 status
-    $checkQuery = "SELECT week_id FROM weeks WHERE week_id = ?";
-    $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(1, $weekId, PDO::PARAM_STR);
-    $checkStmt->execute();
-    if (!$checkStmt->fetch(PDO::FETCH_ASSOC)) {
-        sendResponse(false, null, "Week not found", 404);
-        return;
-    }
-
-    // TODO: Delete associated comments first (to maintain referential integrity)
-    // Prepare DELETE query for comments table
-    // DELETE FROM comments WHERE week_id = ?
-    $deleteCommentsQuery = "DELETE FROM comments WHERE week_id = ?";
-    $deleteCommentsStmt = $db->prepare($deleteCommentsQuery);
-
-    // TODO: Execute comment deletion query
-    $deleteCommentsStmt->bindParam(1, $weekId, PDO::PARAM_STR);
-    $deleteCommentsStmt->execute();
-
-    // TODO: Prepare DELETE query for week
-    // DELETE FROM weeks WHERE week_id = ?
-    $deleteWeekQuery = "DELETE FROM weeks WHERE week_id = ?";
-
-    // TODO: Bind the week_id parameter
-    $deleteWeekStmt = $db->prepare($deleteWeekQuery);
-    $deleteWeekStmt->bindParam(1, $weekId, PDO::PARAM_STR);
-
-    // TODO: Execute the query
-    $success = $deleteWeekStmt->execute();
-
-    // TODO: Check if delete was successful
-    // If yes, return success response with message indicating week and comments deleted
-    // If no, return error response with 500 status
-    if ($success) {
-        sendResponse(true, null, "Week and associated comments deleted successfully");
-    } else {
-        sendResponse(false, null, "Failed to delete week", 500);
-    }
-}
-
-
-function getCommentsByWeek($db, $weekId) {
-    // TODO: Validate that week_id is provided
-    // If not, return error response with 400 status
-    if (empty($weekId)) {
-        sendResponse(false, null, "week_id is required", 400);
-        return;
-    }
-
-    // TODO: Prepare SQL query to select comments for the week
-    // SELECT id, week_id, author, text, created_at FROM comments WHERE week_id = ? ORDER BY created_at ASC
-    $query = "SELECT id, week_id, author, text, created_at FROM comments WHERE week_id = ? ORDER BY created_at ASC";
-
-    // TODO: Bind the week_id parameter
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(1, $weekId, PDO::PARAM_STR);
-
-    // TODO: Execute the query
-    $stmt->execute();
-
-    // TODO: Fetch all results as an associative array
-    $comments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // TODO: Return JSON response with success status and data
-    // Even if no comments exist, return an empty array
-    sendResponse(true, $comments);
-}
-
-
-function createComment($db, $data) {
-    // TODO: Validate required fields
-    // Check if week_id, author, and text are provided
-    // If any field is missing, return error response with 400 status
-    if (empty($data['week_id']) || empty($data['author']) || empty($data['text'])) {
-        sendResponse(false, null, "Missing required fields", 400);
-        return;
-    }
-
-    // TODO: Sanitize input data
-    // Trim whitespace from all fields
-    $weekId = trim($data['week_id']);
-    $author = trim($data['author']);
-    $text = trim($data['text']);
-
-    // TODO: Validate that text is not empty after trimming
-    // If empty, return error response with 400 status
-    if (empty($text)) {
-        sendResponse(false, null, "Comment text cannot be empty", 400);
-        return;
-    }
-
-    // TODO: Check if the week exists
-    // Prepare and execute a SELECT query on weeks table
-    // If week not found, return error response with 404 status
-    $checkQuery = "SELECT week_id FROM weeks WHERE week_id = ?";
-    $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(1, $weekId, PDO::PARAM_STR);
-    $checkStmt->execute();
-    if (!$checkStmt->fetch(PDO::FETCH_ASSOC)) {
-        sendResponse(false, null, "Week not found", 404);
-        return;
-    }
-
-    // TODO: Prepare INSERT query
-    // INSERT INTO comments (week_id, author, text) VALUES (?, ?, ?)
-    $insertQuery = "INSERT INTO comments (week_id, author, text) VALUES (?, ?, ?)";
-
-    // TODO: Bind parameters
-    $stmt = $db->prepare($insertQuery);
-    $stmt->bindParam(1, $weekId);
-    $stmt->bindParam(2, $author);
-    $stmt->bindParam(3, $text);
-
-    // TODO: Execute the query
-    $success = $stmt->execute();
-
-    // TODO: Check if insert was successful
-    // If yes, get the last insert ID and return success response with 201 status
-    // Include the new comment data in the response
-    // If no, return error response with 500 status
-    if ($success) {
-        $newComment = [
-            'id' => $db->lastInsertId(),
-            'week_id' => $weekId,
-            'author' => $author,
-            'text' => $text,
-            'created_at' => date('Y-m-d H:i:s')
-        ];
-        sendResponse(true, $newComment, null, 201);
-    } else {
-        sendResponse(false, null, "Failed to create comment", 500);
-    }
-}
-
-
-function deleteComment($db, $commentId) {
-    // TODO: Validate that id is provided
-    // If not, return error response with 400 status
-    if (empty($commentId)) {
-        sendResponse(false, null, "commentId is required", 400);
-        return;
-    }
-
-    // TODO: Check if comment exists
-    // Prepare and execute a SELECT query
-    // If not found, return error response with 404 status
-    $checkQuery = "SELECT id FROM comments WHERE id = ?";
-    $checkStmt = $db->prepare($checkQuery);
-    $checkStmt->bindParam(1, $commentId, PDO::PARAM_INT);
-    $checkStmt->execute();
-    if (!$checkStmt->fetch(PDO::FETCH_ASSOC)) {
-        sendResponse(false, null, "Comment not found", 404);
-        return;
-    }
-
-    $deleteQuery = "DELETE FROM comments WHERE id = ?";
-    $deleteStmt = $db->prepare($deleteQuery);
-    $deleteStmt->bindParam(1, $commentId, PDO::PARAM_INT);
-    $success = $deleteStmt->execute();
-
-    if ($success) {
-        sendResponse(true, null, "Comment deleted successfully");
-    } else {
-        sendResponse(false, null, "Failed to delete comment", 500);
-    }
-}
-
- // TODO: Prepare DELETE query
-    // DELETE FROM comments WHERE id = ?
-    $deleteQuery = "DELETE FROM comments WHERE id = ?";
-    $deleteStmt = $db->prepare($deleteQuery);
-
-    // TODO: Bind the id parameter
-    $deleteStmt->bindParam(1, $commentId, PDO::PARAM_INT);
-
-    // TODO: Execute the query
-    $success = $deleteStmt->execute();
-
-    // TODO: Check if delete was successful
-    // If yes, return success response
-    // If no, return error response with 500 status
-    if ($success) {
-        sendResponse(['success' => true, 'message' => 'Comment deleted successfully']);
-    } else {
-        sendError("Failed to delete comment", 500);
-    }
-}
-
-
-// ============================================================================
-// MAIN REQUEST ROUTER
-// ============================================================================
-
-try {
-    // TODO: Determine the resource type from query parameters
-    // Get 'resource' parameter (?resource=weeks or ?resource=comments)
-    // If not provided, default to 'weeks'
-    $resource = isset($_GET['resource']) ? $_GET['resource'] : 'weeks';
-    $method = $_SERVER['REQUEST_METHOD'];
-    $body = json_decode(file_get_contents('php://input'), true);
-
-    // Route based on resource type and HTTP method
-
-    // ========== WEEKS ROUTES ==========
-    if ($resource === 'weeks') {
-
-        if ($method === 'GET') {
-            // TODO: Check if week_id is provided in query parameters
-            // If yes, call getWeekById()
-            // If no, call getAllWeeks() to get all weeks (with optional search/sort)
-            if (isset($_GET['week_id'])) {
-                getWeekById($db, $_GET['week_id']);
-            } else {
-                getAllWeeks($db);
-            }
-
-        } elseif ($method === 'POST') {
-            // TODO: Call createWeek() with the decoded request body
-            createWeek($db, $body);
-
-        } elseif ($method === 'PUT') {
-            // TODO: Call updateWeek() with the decoded request body
-            updateWeek($db, $body);
-
-        } elseif ($method === 'DELETE') {
-            // TODO: Get week_id from query parameter or request body
-            // Call deleteWeek()
-            $weekId = isset($_GET['week_id']) ? $_GET['week_id'] : ($body['week_id'] ?? null);
-            deleteWeek($db, $weekId);
-
-        } else {
-            // TODO: Return error for unsupported methods
-            // Set HTTP status to 405 (Method Not Allowed)
-            sendError("Method Not Allowed", 405);
-        }
-    }
-
-    // ========== COMMENTS ROUTES ==========
-    elseif ($resource === 'comments') {
-
-        if ($method === 'GET') {
-            // TODO: Get week_id from query parameters
-            // Call getCommentsByWeek()
-            if (isset($_GET['week_id'])) {
-                getCommentsByWeek($db, $_GET['week_id']);
-            } else {
-                sendError("week_id is required", 400);
-            }
-
-        } elseif ($method === 'POST') {
-            // TODO: Call createComment() with the decoded request body
-            createComment($db, $body);
-
-        } elseif ($method === 'DELETE') {
-            // TODO: Get comment id from query parameter or request body
-            // Call deleteComment()
-            $commentId = isset($_GET['id']) ? $_GET['id'] : ($body['id'] ?? null);
-            deleteComment($db, $commentId);
-
-        } else {
-            // TODO: Return error for unsupported methods
-            // Set HTTP status to 405 (Method Not Allowed)
-            sendError("Method Not Allowed", 405);
-        }
-    }
-
-    // ========== INVALID RESOURCE ==========
-    else {
-        // TODO: Return error for invalid resource
-        // Set HTTP status to 400 (Bad Request)
-        // Return JSON error message: "Invalid resource. Use 'weeks' or 'comments'"
-        sendError("Invalid resource. Use 'weeks' or 'comments'", 400);
-    }
-
-} catch (PDOException $e) {
-    // TODO: Handle database errors
-    // Log the error message (optional, for debugging)
-    // error_log($e->getMessage());
-
-    // TODO: Return generic error response with 500 status
-    // Do NOT expose database error details to the client
-    // Return message: "Database error occurred"
-    sendError("Database error occurred", 500);
-
-} catch (Exception $e) {
-    // TODO: Handle general errors
-    // Log the error message (optional)
-    // Return error response with 500 status
-    sendError("An error occurred", 500);
-}
-
-
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
-
-/**
- * Helper function to send JSON response
- * 
- * @param mixed $data - Data to send (will be JSON encoded)
- * @param int $statusCode - HTTP status code (default: 200)
- */
 function sendResponse($data, $statusCode = 200) {
-    // TODO: Set HTTP response code
-    // Use http_response_code($statusCode)
     http_response_code($statusCode);
-
-    // TODO: Echo JSON encoded data
-    // Use json_encode($data)
     echo json_encode($data);
-
-    // TODO: Exit to prevent further execution
     exit;
 }
 
-
-/**
- * Helper function to send error response
- * 
- * @param string $message - Error message
- * @param int $statusCode - HTTP status code
- */
 function sendError($message, $statusCode = 400) {
-    // TODO: Create error response array
-    // Structure: ['success' => false, 'error' => $message]
     $error = ['success' => false, 'error' => $message];
-
-    // TODO: Call sendResponse() with the error array and status code
     sendResponse($error, $statusCode);
 }
 
-
-/**
- * Helper function to validate date format (YYYY-MM-DD)
- * 
- * @param string $date - Date string to validate
- * @return bool - True if valid, false otherwise
- */
 function validateDate($date) {
-    // TODO: Use DateTime::createFromFormat() to validate
-    // Format: 'Y-m-d'
-    // Check that the created date matches the input string
-    // Return true if valid, false otherwise
     $d = DateTime::createFromFormat('Y-m-d', $date);
     return $d && $d->format('Y-m-d') === $date;
 }
 
-
-/**
- * Helper function to sanitize input
- * 
- * @param string $data - Data to sanitize
- * @return string - Sanitized data
- */
 function sanitizeInput($data) {
-    // TODO: Trim whitespace
     $data = trim($data);
-
-    // TODO: Strip HTML tags using strip_tags()
     $data = strip_tags($data);
-
-    // TODO: Convert special characters using htmlspecialchars()
     $data = htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
-
-    // TODO: Return sanitized data
     return $data;
 }
 
-
-/**
- * Helper function to validate allowed sort fields
- * 
- * @param string $field - Field name to validate
- * @param array $allowedFields - Array of allowed field names
- * @return bool - True if valid, false otherwise
- */
 function isValidSortField($field, $allowedFields) {
-    // TODO: Check if $field exists in $allowedFields array
-    // Use in_array()
-    // Return true if valid, false otherwise
     return in_array($field, $allowedFields);
 }
-
-?> 
-
-
-
-
-    
-   
+?>
